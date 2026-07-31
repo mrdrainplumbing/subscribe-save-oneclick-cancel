@@ -14,7 +14,7 @@ const amazonDomains = [
     'https://www.amazon.com.au',
 ];
 
-export default defineManifest({
+const baseManifest = {
     manifest_version: 3,
     name: 'Amazon Subscribe & Save one-click cancel',
     description: 'Easy way to cancel Subscribe & Save subscriptions on Amazon with just one button click',
@@ -31,5 +31,26 @@ export default defineManifest({
             js: ['src/content_script.ts'],
         },
     ],
-    permissions: ['storage'],
-});
+    permissions: ['storage'] as ['storage'],
+};
+
+export function createManifest(browser: 'chrome' | 'firefox') {
+    if (browser === 'chrome') return defineManifest(baseManifest);
+
+    const firefoxManifest = {
+        ...baseManifest,
+        browser_specific_settings: {
+            gecko: {
+                id: 'subscribe-save-oneclick-cancel@longzheng.net',
+                strict_min_version: '140.0',
+                data_collection_permissions: {
+                    required: ['none'] as ['none'],
+                },
+            },
+        },
+    };
+
+    return defineManifest(firefoxManifest);
+}
+
+export default createManifest('chrome');

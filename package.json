@@ -1,23 +1,26 @@
 {
     "name": "chrome-subscribe-save-oneclick-cancel",
     "version": "1.0.0",
-    "description": "chrome-subscribe-save-oneclick-cancel",
+    "description": "Amazon Subscribe & Save one-click cancel browser extension",
     "license": "MIT",
     "author": "Long Zheng",
     "repository": {
         "type": "git",
         "url": "https://github.com/longzheng/chrome-subscribe-save-oneclick-cancel.git"
     },
-    "packageManager": "pnpm@10.13.1",
     "type": "module",
     "scripts": {
         "preinstall": "npx only-allow pnpm",
         "dev": "vite",
-        "build": "pnpm run clean && vite build",
-        "clean": "rimraf dist chrome-subscribe-save-oneclick-cancel.zip",
+        "build": "pnpm run clean && pnpm run build:chrome && pnpm run build:firefox",
+        "build:chrome": "vite build --mode chrome",
+        "build:firefox": "vite build --mode firefox",
+        "clean": "rimraf dist chrome-subscribe-save-oneclick-cancel.zip firefox-subscribe-save-oneclick-cancel.zip",
         "test": "pnpm exec jest --passWithNoTests",
         "lint": "oxlint .",
-        "build-zip": "pnpm run build && cd dist && zip -r ../chrome-subscribe-save-oneclick-cancel.zip *",
+        "build-zip": "pnpm run build && pnpm run build-zip:chrome && pnpm run build-zip:firefox",
+        "build-zip:chrome": "cd dist/chrome && zip -r ../../chrome-subscribe-save-oneclick-cancel.zip *",
+        "build-zip:firefox": "cd dist/firefox && zip -r ../../firefox-subscribe-save-oneclick-cancel.zip *",
         "format": "oxfmt --write .",
         "format:check": "oxfmt --check ."
     },
@@ -38,5 +41,6 @@
         "ts-jest": "^29.4.6",
         "typescript": "^6.0.2",
         "vite": "^8.0.3"
-    }
+    },
+    "packageManager": "pnpm@10.13.1"
 }

@@ -1,4 +1,4 @@
-# Amazon Subscribe & Save one-click cancel Chrome extension
+# Amazon Subscribe & Save one-click cancel browser extension
 
 Easy way to cancel Amazon Subscribe & Save subscriptions with just one button click.
 
@@ -13,20 +13,34 @@ Easy way to cancel Amazon Subscribe & Save subscriptions with just one button cl
 
 ## Development
 
-This project now uses the `create-crxjs` Vite-based extension structure.
+This project uses the `create-crxjs` Vite-based extension structure and builds separate Chrome and Firefox packages.
 
 - `pnpm run dev` - run Vite in watch mode for extension development
-- `pnpm run build` - generate a production extension build in `dist/`
+- `pnpm run build` - generate production builds in `dist/chrome/` and `dist/firefox/`
+- `pnpm run build:chrome` - build only the Chrome extension
+- `pnpm run build:firefox` - build only the Firefox extension
+- `pnpm run build-zip` - build both browsers and create their store-ready ZIP archives
 - `pnpm run lint` - run oxlint using the project configuration
 - `pnpm run format` - format the codebase with oxfmt
+
+Pushing a version tag such as `v1.0.9` runs the build workflow, creates a GitHub Release with generated release notes, and attaches both browser ZIPs.
 
 ## Install from Chrome Web Store
 
 https://chrome.google.com/webstore/detail/lmhmoofhakpnlfighmgfkoonfkbjjgfh?authuser=0&hl=en-AU
 
-## Install locally
+## Install locally in Chrome
 
 1. Build the project with `pnpm install` and `pnpm run build`
 1. Open Chrome "Manage Extensions" page `chrome://extensions/`
 1. Enable "Developer mode" toggle in top right corner
-1. Click "Load unpacked" button and select the `dist` folder in the project
+1. Click "Load unpacked" button and select the `dist/chrome` folder in the project
+
+## Install locally in Firefox
+
+1. Build the project with `pnpm install` and `pnpm run build`
+1. Open Firefox's debugging page at `about:debugging#/runtime/this-firefox`
+1. Click "Load Temporary Add-on"
+1. Select `dist/firefox/manifest.json`
+
+Temporary add-ons are removed when Firefox exits. The Firefox build includes the add-on ID and data-collection declaration required for signing and submission to addons.mozilla.org.
