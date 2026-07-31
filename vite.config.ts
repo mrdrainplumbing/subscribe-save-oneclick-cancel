@@ -9,6 +9,6 @@ export default defineConfig(({ mode }) => {
         build: {
             outDir: `dist/${browser}`,
         },
-        plugins: [crx({ manifest: createManifest(browser) })],
+        plugins: [crx({ manifest: createManifest(browser), browser })],
     };
 });
