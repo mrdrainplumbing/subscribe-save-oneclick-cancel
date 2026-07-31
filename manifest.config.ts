@@ -47,6 +47,9 @@ export function createManifest(browser: 'chrome' | 'firefox') {
                     required: ['none'] as ['none'],
                 },
             },
+            gecko_android: {
+                strict_min_version: '142.0',
+            },
         },
     };
 

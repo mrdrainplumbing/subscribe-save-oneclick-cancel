@@ -23,7 +23,7 @@ This project uses the `create-crxjs` Vite-based extension structure and builds s
 - `pnpm run lint` - run oxlint using the project configuration
 - `pnpm run format` - format the codebase with oxfmt
 
-Pushing a version tag such as `v1.0.9` runs the build workflow, creates a GitHub Release with generated release notes, and attaches both browser ZIPs.
+Pushing a version tag such as `v1.0.10` runs the build workflow, creates a GitHub Release with generated release notes, and attaches the Chrome ZIP and Mozilla-signed Firefox XPI. Firefox signing uses the `AMO_JWT_ISSUER` and `AMO_JWT_SECRET` GitHub Actions repository secrets.
 
 ## Install from Chrome Web Store
 

@@ -28,19 +28,37 @@ jobs:
             - run: pnpm install
             - run: pnpm run lint
             - run: pnpm run build-zip
+            - name: "Sign Firefox Extension"
+              if: startsWith(github.ref, 'refs/tags/v')
+              env:
+                  AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+                  AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+              run: |
+                  git archive --format=zip --output dist/firefox-source.zip HEAD
+                  pnpm exec web-ext sign \
+                      --source-dir dist/firefox \
+                      --artifacts-dir dist/signed-firefox \
+                      --channel unlisted \
+                      --api-key "$AMO_JWT_ISSUER" \
+                      --api-secret "$AMO_JWT_SECRET" \
+                      --upload-source-code dist/firefox-source.zip \
+                      --approval-timeout 900000 \
+                      --no-input
+                  mv dist/signed-firefox/*.xpi firefox-subscribe-save-oneclick-cancel.xpi
             - name: "Upload Artifacts"
               uses: actions/upload-artifact@v4
               with:
                   path: |
                       chrome-subscribe-save-oneclick-cancel.zip
                       firefox-subscribe-save-oneclick-cancel.zip
+                      firefox-subscribe-save-oneclick-cancel.xpi
             - name: "Create GitHub Release"
               if: startsWith(github.ref, 'refs/tags/v')
               env:
                   GH_TOKEN: ${{ github.token }}
               run: gh release view "$GITHUB_REF_NAME" || gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --title "$GITHUB_REF_NAME"
-            - name: "Upload Release ZIPs"
+            - name: "Upload Release Packages"
               if: startsWith(github.ref, 'refs/tags/v')
               env:
                   GH_TOKEN: ${{ github.token }}
-              run: gh release upload "$GITHUB_REF_NAME" chrome-subscribe-save-oneclick-cancel.zip firefox-subscribe-save-oneclick-cancel.zip --clobber
+              run: gh release upload "$GITHUB_REF_NAME" chrome-subscribe-save-oneclick-cancel.zip firefox-subscribe-save-oneclick-cancel.xpi --clobber

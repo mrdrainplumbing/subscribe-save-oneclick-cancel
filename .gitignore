@@ -5,4 +5,5 @@ tmp/
 .DS_Store
 chrome-subscribe-save-oneclick-cancel.zip
 firefox-subscribe-save-oneclick-cancel.zip
+firefox-subscribe-save-oneclick-cancel.xpi
 public/manifest.json
