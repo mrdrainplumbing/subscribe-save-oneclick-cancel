@@ -44,3 +44,14 @@ https://chrome.google.com/webstore/detail/lmhmoofhakpnlfighmgfkoonfkbjjgfh?authu
 1. Select `dist/firefox/manifest.json`
 
 Temporary add-ons are removed when Firefox exits. The Firefox build includes the add-on ID and data-collection declaration required for signing and submission to addons.mozilla.org.
+
+## Debug a live Firefox session from the development host
+
+The macOS helper starts Firefox Developer Edition with WebDriver BiDi enabled and opens a loopback-only SSH reverse tunnel to the development host.
+
+1. Quit Firefox Developer Edition with `Cmd+Q`.
+1. Run `scripts/firefox-remote-debug-macos.zsh` on the Mac.
+1. Open the page to debug.
+1. Press `Ctrl+C` when finished to close both Firefox and the tunnel.
+
+The script defaults to `dev@192.168.100.210`. Pass a different SSH destination as its first argument or set `FIREFOX_DEBUG_REMOTE`. Set `FIREFOX_DEBUG_PORT` to override port `9222`.
