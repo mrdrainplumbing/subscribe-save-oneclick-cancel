@@ -9,29 +9,29 @@ const subscriptionsContainer = document.querySelector('#mysContainer');
 
 // the element containing all the deliveries will be loaded asynchronously
 // we need to observe the element for changes when it is loaded
+async function processSubscriptionsContainer() {
+    if (!subscriptionsContainer) {
+        return;
+    }
+
+    const subscriptionCards = Array.from(subscriptionsContainer.querySelectorAll<HTMLElement>('.subscription-card'));
+
+    for (const subscriptionCard of subscriptionCards) {
+        const result = processSubscriptionCard(subscriptionCard);
+
+        if (!result) {
+            continue;
+        }
+
+        itemCancelButtonButtonBySubscriptionId.set(result.subscriptionId, result.cancelButton);
+    }
+
+    addCancelAllButton();
+    await processCancelQueue(itemCancelButtonButtonBySubscriptionId);
+}
+
 const subscriptionsContainerObserver = new MutationObserver(() => {
-    void (async () => {
-        if (!subscriptionsContainer) {
-            return;
-        }
-
-        const subscriptionCards = Array.from(
-            subscriptionsContainer.querySelectorAll<HTMLElement>('.subscription-card'),
-        );
-
-        for (const subscriptionCard of subscriptionCards) {
-            const result = processSubscriptionCard(subscriptionCard);
-
-            if (!result) {
-                continue;
-            }
-
-            itemCancelButtonButtonBySubscriptionId.set(result.subscriptionId, result.cancelButton);
-        }
-
-        addCancelAllButton();
-        await processCancelQueue(itemCancelButtonButtonBySubscriptionId);
-    })();
+    void processSubscriptionsContainer();
 });
 
 export function observeSubscriptionsContainer() {
@@ -51,6 +51,8 @@ export function observeSubscriptionsContainer() {
         subtree: true,
         childList: true,
     });
+
+    void processSubscriptionsContainer();
 }
 
 function addCancelAllButton() {

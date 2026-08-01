@@ -9,26 +9,28 @@ const deliveriesContainer = document.querySelector('#mydContainer');
 
 // the element containing all the deliveries will be loaded asynchronously
 // we need to observe the element for changes when it is loaded
+async function processDeliveriesContainer() {
+    if (!deliveriesContainer) {
+        return;
+    }
+
+    const deliveryCards = Array.from(deliveriesContainer.querySelectorAll<HTMLElement>('.delivery-card'));
+
+    for (const deliveryCard of deliveryCards) {
+        if (deliveryCard.hasAttribute(ONECLICK_CANCEL_ATTRIBUTE)) {
+            continue;
+        }
+
+        deliveryCard.setAttribute(ONECLICK_CANCEL_ATTRIBUTE, 'true');
+
+        processDeliveryCard(deliveryCard);
+    }
+
+    await processCancelQueue(itemCancelButtonButtonBySubscriptionId);
+}
+
 const deliveriesContainerObserver = new MutationObserver(() => {
-    void (async () => {
-        if (!deliveriesContainer) {
-            return;
-        }
-
-        const deliveryCards = Array.from(deliveriesContainer.querySelectorAll<HTMLElement>('.delivery-card'));
-
-        for (const deliveryCard of deliveryCards) {
-            if (deliveryCard.hasAttribute(ONECLICK_CANCEL_ATTRIBUTE)) {
-                continue;
-            }
-
-            deliveryCard.setAttribute(ONECLICK_CANCEL_ATTRIBUTE, 'true');
-
-            processDeliveryCard(deliveryCard);
-        }
-
-        await processCancelQueue(itemCancelButtonButtonBySubscriptionId);
-    })();
+    void processDeliveriesContainer();
 });
 
 export function observeDeliveriesContainer() {
@@ -40,6 +42,8 @@ export function observeDeliveriesContainer() {
         subtree: true,
         childList: true,
     });
+
+    void processDeliveriesContainer();
 }
 
 function processDeliveryCard(deliveryCard: HTMLElement) {
