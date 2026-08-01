@@ -1,12 +1,9 @@
 import { observeDeliveriesContainer } from './deliveries';
 import { hasCancelSubmitted, removeCancelSubmitted, removeFromCancelQueue } from './sessionStorage';
 import { observeSubscriptionsContainer } from './subscriptions';
-import rg4js from 'raygun4js';
 import { VERSION } from './version';
 
-rg4js('apiKey', 'AcjYeDpxudocd1VnNiiFg');
-rg4js('enableCrashReporting', true);
-rg4js('setVersion', VERSION);
+document.documentElement.setAttribute('data-oneclick-cancel-extension-version', VERSION);
 
 void (async () => {
     try {
@@ -32,6 +29,6 @@ void (async () => {
         observeDeliveriesContainer();
         observeSubscriptionsContainer();
     } catch (error) {
-        rg4js('send', error);
+        console.error('Amazon Subscribe & Save one-click cancel failed to start', error);
     }
 })();
