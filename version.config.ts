@@ -1,4 +1,4 @@
-const FALLBACK_VERSION = '1.0.13';
+const FALLBACK_VERSION = '2026.9.10.1';
 const extensionVersion = (
     globalThis as typeof globalThis & {
         process?: { env?: Record<string, string | undefined> };

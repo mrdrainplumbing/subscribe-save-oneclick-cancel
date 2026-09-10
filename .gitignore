@@ -6,4 +6,6 @@ tmp/
 chrome-subscribe-save-oneclick-cancel.zip
 firefox-subscribe-save-oneclick-cancel.zip
 firefox-subscribe-save-oneclick-cancel.xpi
+subscribe-save-oneclick-cancel-firefox-*.zip
+subscribe-save-oneclick-cancel-firefox-*.xpi
 public/manifest.json
