@@ -14,17 +14,17 @@ Easy way to cancel Amazon Subscribe & Save subscriptions with just one button cl
 
 ## Development
 
-This project uses the `create-crxjs` Vite-based extension structure and builds separate Chrome and Firefox packages.
+This project uses the `create-crxjs` Vite-based extension structure and builds separate Chrome and Firefox packages. Project tasks are exposed through `just`.
 
-- `pnpm run dev` - run Vite in watch mode for extension development
-- `pnpm run build` - generate production builds in `dist/chrome/` and `dist/firefox/`
-- `pnpm run build:chrome` - build only the Chrome extension
-- `pnpm run build:firefox` - build only the Firefox extension
-- `pnpm run build-zip` - build both browsers and create their store-ready ZIP archives
-- `pnpm run lint` - run oxlint using the project configuration
-- `pnpm run format` - format the codebase with oxfmt
+1. `just install` - install the locked dependencies.
+1. `just check` - run formatting, linting, tests, and both browser builds.
+1. `just build-chrome` - generate the Chrome extension in `dist/`.
+1. `just build-firefox` - generate the Firefox extension in `dist/firefox/`.
+1. `just package-chrome` - create the Chrome store ZIP.
+1. `just package-firefox` - create the Firefox store ZIP.
+1. `pnpm run dev` - run Vite in watch mode for extension development.
 
-Pushing a version tag such as `v1.0.10` runs the build workflow, creates a GitHub Release with generated release notes, and attaches the Chrome ZIP and Mozilla-signed Firefox XPI. Firefox signing uses the `AMO_JWT_ISSUER` and `AMO_JWT_SECRET` GitHub Actions repository secrets.
+Pushing a version tag such as `v1.0.14` runs the Firefox release workflow, derives the extension version from the tag, creates a GitHub Release with generated release notes, and attaches the Chrome ZIP and Mozilla-signed Firefox XPI. Local and manually dispatched builds fall back to version `1.0.13`. Firefox signing uses the `AMO_JWT_ISSUER` and `AMO_JWT_SECRET` GitHub Actions repository secrets.
 
 ## Install from Chrome Web Store
 
@@ -32,14 +32,14 @@ https://chrome.google.com/webstore/detail/lmhmoofhakpnlfighmgfkoonfkbjjgfh?authu
 
 ## Install locally in Chrome
 
-1. Build the project with `pnpm install` and `pnpm run build`
+1. Build the project with `just install` and `just build-chrome`.
 1. Open Chrome "Manage Extensions" page `chrome://extensions/`
 1. Enable "Developer mode" toggle in top right corner
-1. Click "Load unpacked" button and select the `dist/chrome` folder in the project
+1. Click "Load unpacked" and select the project's `dist/` folder.
 
 ## Install locally in Firefox
 
-1. Build the project with `pnpm install` and `pnpm run build`
+1. Build the project with `just install` and `just build-firefox`.
 1. Open Firefox's debugging page at `about:debugging#/runtime/this-firefox`
 1. Click "Load Temporary Add-on"
 1. Select `dist/firefox/manifest.json`

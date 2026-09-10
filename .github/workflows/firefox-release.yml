@@ -1,0 +1,67 @@
+name: Firefox release
+
+on:
+    workflow_dispatch:
+    push:
+        tags: ['v*']
+
+permissions:
+    contents: write
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v7
+            - uses: pnpm/action-setup@v6
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 24
+                  cache: 'pnpm'
+
+            - run: pnpm install --frozen-lockfile
+            - name: 'Set extension version from tag'
+              if: startsWith(github.ref, 'refs/tags/v')
+              run: echo "EXTENSION_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+            - name: 'Build Chrome package'
+              run: pnpm run build-zip
+            - name: 'Build Firefox package'
+              run: |
+                  pnpm exec vite build --mode firefox
+                  cd dist/firefox
+                  zip -r ../../firefox-subscribe-save-oneclick-cancel.zip .
+            - name: 'Sign Firefox extension'
+              if: startsWith(github.ref, 'refs/tags/v')
+              env:
+                  AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+                  AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+              run: |
+                  git archive --format=zip --output dist/firefox-source.zip HEAD
+                  pnpm dlx web-ext@10.5.0 sign \
+                      --source-dir dist/firefox \
+                      --artifacts-dir dist/signed-firefox \
+                      --channel unlisted \
+                      --api-key "$AMO_JWT_ISSUER" \
+                      --api-secret "$AMO_JWT_SECRET" \
+                      --upload-source-code dist/firefox-source.zip \
+                      --approval-timeout 900000 \
+                      --no-input
+                  mv dist/signed-firefox/*.xpi firefox-subscribe-save-oneclick-cancel.xpi
+            - name: 'Upload build artifacts'
+              uses: actions/upload-artifact@v7
+              with:
+                  path: |
+                      chrome-subscribe-save-oneclick-cancel.zip
+                      firefox-subscribe-save-oneclick-cancel.zip
+                      firefox-subscribe-save-oneclick-cancel.xpi
+            - name: 'Create GitHub release'
+              if: startsWith(github.ref, 'refs/tags/v')
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: gh release view "$GITHUB_REF_NAME" || gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --title "$GITHUB_REF_NAME"
+            - name: 'Upload release packages'
+              if: startsWith(github.ref, 'refs/tags/v')
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: gh release upload "$GITHUB_REF_NAME" chrome-subscribe-save-oneclick-cancel.zip firefox-subscribe-save-oneclick-cancel.xpi --clobber

@@ -1,1 +1,3 @@
-export const VERSION = '1.0.13';
+declare const EXTENSION_VERSION: string;
+
+export const VERSION = EXTENSION_VERSION;
