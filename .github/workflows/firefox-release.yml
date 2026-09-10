@@ -24,8 +24,6 @@ jobs:
             - name: 'Set extension version from tag'
               if: startsWith(github.ref, 'refs/tags/v')
               run: echo "EXTENSION_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
-            - name: 'Build Chrome package'
-              run: pnpm run build-zip
             - name: 'Build Firefox package'
               run: |
                   pnpm exec vite build --mode firefox
@@ -48,11 +46,10 @@ jobs:
                       --approval-timeout 900000 \
                       --no-input
                   mv dist/signed-firefox/*.xpi firefox-subscribe-save-oneclick-cancel.xpi
-            - name: 'Upload build artifacts'
+            - name: 'Upload Firefox build artifacts'
               uses: actions/upload-artifact@v7
               with:
                   path: |
-                      chrome-subscribe-save-oneclick-cancel.zip
                       firefox-subscribe-save-oneclick-cancel.zip
                       firefox-subscribe-save-oneclick-cancel.xpi
             - name: 'Create GitHub release'
@@ -64,4 +61,4 @@ jobs:
               if: startsWith(github.ref, 'refs/tags/v')
               env:
                   GH_TOKEN: ${{ github.token }}
-              run: gh release upload "$GITHUB_REF_NAME" chrome-subscribe-save-oneclick-cancel.zip firefox-subscribe-save-oneclick-cancel.xpi --clobber
+              run: gh release upload "$GITHUB_REF_NAME" firefox-subscribe-save-oneclick-cancel.xpi --clobber

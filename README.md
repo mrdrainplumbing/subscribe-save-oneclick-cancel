@@ -24,7 +24,7 @@ This project uses the `create-crxjs` Vite-based extension structure and builds s
 1. `just package-firefox` - create the Firefox store ZIP.
 1. `pnpm run dev` - run Vite in watch mode for extension development.
 
-Pushing a version tag such as `v1.0.14` runs the Firefox release workflow, derives the extension version from the tag, creates a GitHub Release with generated release notes, and attaches the Chrome ZIP and Mozilla-signed Firefox XPI. Local and manually dispatched builds fall back to version `1.0.13`. Firefox signing uses the `AMO_JWT_ISSUER` and `AMO_JWT_SECRET` GitHub Actions repository secrets.
+Pushing a version tag such as `v1.0.14` runs the Firefox release workflow, derives the extension version from the tag, creates a GitHub Release with generated release notes, and attaches the Mozilla-signed Firefox XPI. Chrome remains covered by the regular build workflow but is not published by this fork. Local and manually dispatched builds fall back to version `1.0.13`. Firefox signing uses the `AMO_JWT_ISSUER` and `AMO_JWT_SECRET` GitHub Actions repository secrets.
 
 ## Install from Chrome Web Store
 
